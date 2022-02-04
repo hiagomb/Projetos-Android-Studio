@@ -7,6 +7,7 @@ import com.example.whatsappclone.model.Usuario;
 import com.google.android.material.textfield.TextInputEditText;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -36,13 +37,21 @@ public class CadastroEmailSenhaActivity extends AppCompatActivity {
                 usuario.setEmail(input_email.getText().toString());
                 usuario.setSenha(input_senha.getText().toString());
 
-                dao= new UsuarioDAO();
-                dao.cadastrar(usuario);
+                dao= new UsuarioDAO(CadastroEmailSenhaActivity.this);
+                if(dao.cadastrar(usuario)){
+                    finish();
+                }
             }
         });
     }
 
+
     public Activity getActivity(){
         return this;
     }
+
+//    public Context getContext(){
+//        return getApplicationContext();
+//    }
+
 }

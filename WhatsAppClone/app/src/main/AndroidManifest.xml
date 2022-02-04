@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsAppClone">
         <activity
+            android:name=".activity.ConversaActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".activity.MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.CadastroEmailSenhaActivity"
             android:exported="false" />
         <activity
