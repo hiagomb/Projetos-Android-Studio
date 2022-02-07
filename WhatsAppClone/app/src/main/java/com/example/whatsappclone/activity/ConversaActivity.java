@@ -10,7 +10,9 @@ import com.example.whatsappclone.R;
 import com.example.whatsappclone.adapter.AdapterListaConversaUnica;
 import com.example.whatsappclone.helper.Base64Custom;
 import com.example.whatsappclone.helper.ConfigFirebase;
+import com.example.whatsappclone.model.Conversa;
 import com.example.whatsappclone.model.Mensagem;
+import com.example.whatsappclone.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +40,7 @@ public class ConversaActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private DatabaseReference reference;
     private List<Mensagem> lista;
+    public String aux_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +70,62 @@ public class ConversaActivity extends AppCompatActivity {
                 String message= input_message.getText().toString();
                 if(!message.isEmpty()){
                     Mensagem mensagem= new Mensagem();
-//                    String id= Base64Custom.encode64(ConfigFirebase.getFirebaseAuth().getCurrentUser().getEmail());
-//                    mensagem.setIdUsuario(id);
+                    String id= Base64Custom.encode64(ConfigFirebase.getFirebaseAuth().getCurrentUser().getEmail());
+                    mensagem.setId_rem(id);
                     mensagem.setMessage(message);
+                    String email_dest_64= Base64Custom.encode64(email_dest);
 
-//                    reference= ConfigFirebase.getFirebase();
-//                    reference.child("mensagens").child(id).child(Base64Custom.encode64(email_dest)).
-//                            setValue(mensagem);
+                    reference= ConfigFirebase.getFirebase();
+                    reference.child("mensagens").child(id).child(email_dest_64).push().
+                            setValue(mensagem);
+                    reference.child("mensagens").child(email_dest_64).child(id).push().
+                            setValue(mensagem);
+
+                    Conversa conversa= new Conversa();
+
+                    //pegando o nome do destinatario
+                    reference.child("usuarios").child(email_dest_64).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.getValue()!= null){
+                                Usuario u= snapshot.getValue(Usuario.class);
+
+                                conversa.setId_usuario(email_dest_64);
+                                conversa.setMensagem(message);
+                                conversa.setNome(u.getNome());
+                                reference.child("conversas").child(id).child(email_dest_64).setValue(conversa);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+
+                    //tenho que inverter os atributos do objeto para salvar no destinatario
+
+                    reference.child("usuarios").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.getValue()!= null){
+                                Usuario u= snapshot.getValue(Usuario.class);
+                                conversa.setNome(u.getNome());
+                                conversa.setId_usuario(id);
+                                reference.child("conversas").child(email_dest_64).child(id).setValue(conversa);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+                    input_message.setText("");
                 }
             }
         });
@@ -101,7 +153,11 @@ public class ConversaActivity extends AppCompatActivity {
                 lista.clear();
                 for(DataSnapshot dados: snapshot.getChildren()){
                     System.out.println("teste de conversa");
-//                    lista.add(dados.getValue())
+                    Mensagem mensagem= dados.getValue(Mensagem.class);
+
+                    aux_id= mensagem.getId_rem();
+                    System.out.println("teste aqui dentro: "+aux_id);
+                    lista.add(mensagem);
                 }
                 adapterListaConversaUnica.notifyDataSetChanged();
             }

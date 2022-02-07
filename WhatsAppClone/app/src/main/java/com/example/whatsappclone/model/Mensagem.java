@@ -4,19 +4,19 @@ import com.google.firebase.database.Exclude;
 
 public class Mensagem {
 
-    private String time;
+    private String id_rem;
     private String message;
 
     public Mensagem() {
     }
 
 
-    public String getTime() {
-        return time;
+    public String getId_rem() {
+        return id_rem;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setId_rem(String id_rem) {
+        this.id_rem = id_rem;
     }
 
     public String getMessage() {

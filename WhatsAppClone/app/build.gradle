@@ -1,11 +1,17 @@
 plugins {
     id 'com.android.application'
 }
-
-
+//
+//androidExtensions {
+//    experimental = true
+//}
 
 android {
     compileSdk 32
+
+    dataBinding {
+        enabled = true
+    }
 
     defaultConfig {
         applicationId "com.example.whatsappclone"
@@ -48,6 +54,9 @@ dependencies {
     implementation 'com.github.rtoshiro.mflibrary:mflibrary:1.0.0'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+    implementation "com.xwray:groupie:2.7.0"
+    implementation "com.xwray:groupie-databinding:2.7.0"
+    implementation "com.xwray:groupie-kotlin-android-extensions:2.7.0"
 }
 
 apply plugin: 'com.google.gms.google-services'

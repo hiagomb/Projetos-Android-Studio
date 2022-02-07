@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.whatsappclone.R;
+import com.example.whatsappclone.model.Conversa;
 import com.example.whatsappclone.model.Usuario;
 
 import java.util.List;
@@ -16,9 +17,12 @@ import java.util.List;
 public class AdapterListaContatos extends RecyclerView.Adapter<AdapterListaContatos.MyViewHolderContatos> {
 
     private List<Usuario> lista;
+    private List<Conversa> lista_conversa;
 
-    public AdapterListaContatos(List<Usuario> lista){
+    public AdapterListaContatos(List<Usuario> lista, List<Conversa> lista_conversa){
+
         this.lista= lista;
+        this.lista_conversa= lista_conversa;
     }
 
     @NonNull
@@ -31,13 +35,25 @@ public class AdapterListaContatos extends RecyclerView.Adapter<AdapterListaConta
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolderContatos holder, int position) {
-        holder.nome_contato.setText(lista.get(position).getNome());
-        holder.email_contato.setText(lista.get(position).getEmail());
+        if(lista!= null){
+            holder.nome_contato.setText(lista.get(position).getNome());
+            holder.email_contato.setText(lista.get(position).getEmail());
+        }else{
+            holder.nome_contato.setText(lista_conversa.get(position).getNome());
+            holder.email_contato.setText(lista_conversa.get(position).getMensagem());
+        }
+
     }
 
     @Override
     public int getItemCount() {
-        return lista.size();
+        int amount= 0;
+        if(lista!=null){
+            amount= lista.size();
+        }else{
+            amount = lista_conversa.size();
+        }
+        return amount;
     }
 
     public class MyViewHolderContatos extends RecyclerView.ViewHolder{

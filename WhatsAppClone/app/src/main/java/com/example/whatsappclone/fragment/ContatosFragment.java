@@ -120,7 +120,7 @@ public class ContatosFragment extends Fragment {
         lista= new ArrayList<>();
 
         //calling adapter
-        AdapterListaContatos adapterListaContatos= new AdapterListaContatos(lista);
+        AdapterListaContatos adapterListaContatos= new AdapterListaContatos(lista, null);
 
         //setting recycler view
         RecyclerView.LayoutManager layoutManager= new LinearLayoutManager(view.getContext());

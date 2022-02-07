@@ -1,14 +1,32 @@
 package com.example.whatsappclone.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.example.whatsappclone.R;
+import com.example.whatsappclone.activity.ConversaActivity;
+import com.example.whatsappclone.adapter.AdapterListaContatos;
+import com.example.whatsappclone.helper.Base64Custom;
+import com.example.whatsappclone.helper.ConfigFirebase;
+import com.example.whatsappclone.helper.RecyclerItemClickListener;
+import com.example.whatsappclone.model.Conversa;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,10 +75,73 @@ public class ConversasFragment extends Fragment {
         }
     }
 
+    private RecyclerView recyclerView;
+    private List<Conversa> lista;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_conversas, container, false);
+        View view = inflater.inflate(R.layout.fragment_conversas, container, false);
+
+        recyclerView= view.findViewById(R.id.recycler_conversas);
+        fill_lista_conversas(view);
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(view.getContext(),
+                        recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Intent intent= new Intent(getActivity(), ConversaActivity.class);
+                        intent.putExtra("nomeContato", lista.get(position).getNome());
+                        intent.putExtra("emailContato",
+                                Base64Custom.decode64(lista.get(position).getId_usuario()));
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+
+                    }
+
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                    }
+                })
+        );
+
+        return view;
+    }
+
+    public void fill_lista_conversas(View view){
+        //vou usar o mesmo adapter do contatos
+        lista= new ArrayList<>();
+
+        //calling adapter
+        AdapterListaContatos adapterListaContatos= new AdapterListaContatos(null, lista);
+
+        //setting recycler view
+        RecyclerView.LayoutManager layoutManager= new LinearLayoutManager(view.getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapterListaContatos);
+
+        String email64 = Base64Custom.encode64(ConfigFirebase.getFirebaseAuth().getCurrentUser().getEmail());
+
+        DatabaseReference reference= ConfigFirebase.getFirebase().child("conversas").child(email64);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                lista.clear();
+                for(DataSnapshot dados: snapshot.getChildren()){
+                    lista.add(dados.getValue(Conversa.class));
+                }
+                adapterListaContatos.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
