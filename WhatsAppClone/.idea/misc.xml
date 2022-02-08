@@ -4,12 +4,15 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/drawable/button_rounded_style.xml" value="0.1" />
+        <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/drawable/camera_branca.xml" value="0.1" />
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/drawable/cv2.xml" value="0.15714285714285714" />
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/drawable/cv_remetente.xml" value="0.1" />
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/drawable/ic_baseline_2k_24.xml" value="0.1" />
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/drawable/person_add_black.xml" value="0.1" />
+        <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/drawable/photo_branca.xml" value="0.1" />
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/drawable/send_button_style.xml" value="0.1" />
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/layout/activity_cadastro_email_senha.xml" value="0.22" />
+        <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/layout/activity_configuracoes.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/layout/activity_conversa.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/Programacao01/AndroidStudioProjects/WhatsAppClone/app/src/main/res/layout/activity_login_email_senha.xml" value="0.22" />

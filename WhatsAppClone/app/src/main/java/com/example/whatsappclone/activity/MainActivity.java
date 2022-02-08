@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -67,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater= getMenuInflater();
         menuInflater.inflate(R.menu.main_menu, menu);
-        MenuItem menuItem= menu.getItem(0);
-        
         return true;
     }
 
@@ -86,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.acao_pesquisar:
                 return true;
+            case R.id.acao_configuracoes:
+                startActivity(new Intent(MainActivity.this, ConfiguracoesActivity.class));
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -142,5 +143,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         alertDialog.create().show();
+    }
+
+    public Context getContext(){
+        return this;
     }
 }

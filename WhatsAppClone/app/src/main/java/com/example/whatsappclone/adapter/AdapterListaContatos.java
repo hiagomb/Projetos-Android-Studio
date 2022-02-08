@@ -1,16 +1,23 @@
 package com.example.whatsappclone.adapter;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.whatsappclone.R;
+import com.example.whatsappclone.activity.MainActivity;
+import com.example.whatsappclone.fragment.ContatosFragment;
+import com.example.whatsappclone.helper.ConfigFirebase;
 import com.example.whatsappclone.model.Conversa;
 import com.example.whatsappclone.model.Usuario;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -38,6 +45,12 @@ public class AdapterListaContatos extends RecyclerView.Adapter<AdapterListaConta
         if(lista!= null){
             holder.nome_contato.setText(lista.get(position).getNome());
             holder.email_contato.setText(lista.get(position).getEmail());
+            Uri photo= Uri.parse(lista.get(position).getPhoto());
+            if(photo!= null){
+//                Glide.with(new MainActivity().getContext()).load(photo).into(holder.img_perfil);
+            }else{
+
+            }
         }else{
             holder.nome_contato.setText(lista_conversa.get(position).getNome());
             holder.email_contato.setText(lista_conversa.get(position).getMensagem());
@@ -59,11 +72,13 @@ public class AdapterListaContatos extends RecyclerView.Adapter<AdapterListaConta
     public class MyViewHolderContatos extends RecyclerView.ViewHolder{
 
         private TextView nome_contato, email_contato;
+        private ImageView img_perfil;
 
         public MyViewHolderContatos(@NonNull View itemView) {
             super(itemView);
             nome_contato= itemView.findViewById(R.id.id_message_send);
             email_contato= itemView.findViewById(R.id.text_email_contato);
+            img_perfil= itemView.findViewById(R.id.contact_img);
         }
     }
 }

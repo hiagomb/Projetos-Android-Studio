@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:background="#131D25"
             android:hint="Digite sua senha:"
+            android:inputType="textPassword"
             android:textColor="@color/white"
             android:textColorHint="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -60,6 +61,7 @@
             android:layout_height="wrap_content"
             android:background="#131D25"
             android:hint="Digite seu email:"
+            android:inputType="textEmailAddress"
             android:textColor="@color/white"
             android:textColorHint="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>

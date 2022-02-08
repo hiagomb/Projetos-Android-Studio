@@ -1,5 +1,7 @@
 package com.example.whatsappclone.model;
 
+import android.net.Uri;
+
 import com.google.firebase.database.Exclude;
 
 public class Usuario {
@@ -8,6 +10,7 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
+    private String photo;
 
     public Usuario() {
 
@@ -46,5 +49,13 @@ public class Usuario {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }
