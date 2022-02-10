@@ -8,8 +8,10 @@
     tools:context=".activity.MainActivity">
 
     <include
-        android:id="@+id/toolbar_principal"
+        android:id="@+id/toolbar_main"
         layout="@layout/toolbar" />
+
+
 
 
     <com.ogaclejapan.smarttablayout.SmartTabLayout

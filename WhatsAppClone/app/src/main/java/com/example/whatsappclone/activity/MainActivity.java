@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private DatabaseReference reference;
     private FirebaseAuth auth;
+    private MaterialSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         auth= ConfigFirebase.getFirebaseAuth();
+
 
         toolbar= findViewById(R.id.toolbar_principal);
         toolbar.setTitle("WhatsApp");
@@ -62,12 +65,49 @@ public class MainActivity extends AppCompatActivity {
                         add("Contatos", ContatosFragment.class).create());
         viewPager.setAdapter(adapter);
         smartTabLayout.setViewPager(viewPager);
+
+        searchView= findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ConversasFragment conversasFragment=
+                        (ConversasFragment) adapter.getPage(0);
+                if(!newText.isEmpty()){
+                    conversasFragment.pesquisar_conversas(newText.toLowerCase());
+                }else{
+                    conversasFragment.recarregar_conversas();
+                }
+                return true;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                ConversasFragment conversasFragment=
+                        (ConversasFragment) adapter.getPage(0);
+                conversasFragment.recarregar_conversas();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater= getMenuInflater();
         menuInflater.inflate(R.menu.main_menu, menu);
+
+        MenuItem item= menu.findItem(R.id.acao_pesquisar);
+        searchView.setMenuItem(item);
         return true;
     }
 

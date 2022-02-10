@@ -1,46 +1,69 @@
 package com.example.whatsappclone.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.adapter.AdapterListaConversaUnica;
 import com.example.whatsappclone.helper.Base64Custom;
 import com.example.whatsappclone.helper.ConfigFirebase;
+import com.example.whatsappclone.helper.Permission;
 import com.example.whatsappclone.model.Conversa;
 import com.example.whatsappclone.model.Mensagem;
 import com.example.whatsappclone.model.Usuario;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.hardware.lights.LightState;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class ConversaActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private String nome_dest, email_dest;
+    private String nome_dest, email_dest, foto_contato;
     private EditText input_message;
     private ImageButton btn_send;
     private RecyclerView recycler_cv_unica;
     private FirebaseAuth auth;
     private DatabaseReference reference;
     private List<Mensagem> lista;
+    private ImageView img_toolbar;
+    private TextView texto_toolbar;
     public String aux_id;
+    private ImageView img_camera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +74,34 @@ public class ConversaActivity extends AppCompatActivity {
         if(extra != null){
             nome_dest= extra.getString("nomeContato");
             email_dest= extra.getString("emailContato");
+            foto_contato= extra.getString("fotoContato");
         }
 
         toolbar= findViewById(R.id.toolbar_conversa);
-        toolbar.setTitle(nome_dest);
+//        toolbar.setTitle(nome_dest);
+        toolbar.setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         setSupportActionBar(toolbar);
+
+        img_toolbar= findViewById(R.id.img_toolbar);
+        texto_toolbar= findViewById(R.id.nome_chat);
+
+        if(foto_contato!= null){
+            Uri uri_foto= Uri.parse(foto_contato);
+            Glide.with(ConversaActivity.this).load(uri_foto).into(img_toolbar);
+        }
+        texto_toolbar.setText(nome_dest);
+
+        img_camera= findViewById(R.id.img_anexar_cam);
+        img_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] permissoes= new String[]{Manifest.permission.CAMERA};
+                Permission.valida_Permissoes(ConversaActivity.this, permissoes, 1);
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(i, 100);
+            }
+        });
 
         input_message= findViewById(R.id.input_message);
         btn_send= findViewById(R.id.btn_send_message);
@@ -131,6 +176,50 @@ public class ConversaActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            Bitmap img= null;
+            try{
+                img= (Bitmap) data.getExtras().get("data");
+                String email_id= Base64Custom.encode64(ConfigFirebase.
+                        getFirebaseAuth().getCurrentUser().getEmail());
+                ByteArrayOutputStream baos= new ByteArrayOutputStream();
+                img.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+                byte[] dados_img= baos.toByteArray();
+                String nomeImagem= UUID.randomUUID().toString();
+                StorageReference ref_img = ConfigFirebase.getFirebaseStorage().
+                        child("imagens").child("mensagens").child(email_id).child(nomeImagem+".jpeg");
+                UploadTask uploadTask= ref_img.putBytes(dados_img);
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        ref_img.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                Uri uri= task.getResult();
+                                Mensagem mensagem= new Mensagem();
+                                mensagem.setId_rem(email_id);
+                                mensagem.setMessage("imagem.jpeg");
+                                mensagem.setFoto(uri.toString());
+                                String email_dest_64= Base64Custom.encode64(email_dest);
+
+                                reference= ConfigFirebase.getFirebase();
+                                reference.child("mensagens").child(email_id).child(email_dest_64).push().
+                                        setValue(mensagem);
+                                reference.child("mensagens").child(email_dest_64).child(email_id).push().
+                                        setValue(mensagem);
+                            }
+                        });
+                    }
+                });
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void fill_lista_mensagens(){
         lista= new ArrayList<>();
 
@@ -167,5 +256,25 @@ public class ConversaActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for(int permissaoResultado: grantResults){
+            if(permissaoResultado == PackageManager.PERMISSION_DENIED){
+                AlertDialog.Builder builder= new AlertDialog.Builder(this);
+                builder.setTitle("Permissões negadas");
+                builder.setCancelable(false);
+                builder.setMessage("Para utilizar essa seção é ncessário autorizar as permissões");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });
+                builder.create().show();
+            }
+        }
     }
 }

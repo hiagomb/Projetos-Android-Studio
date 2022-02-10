@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/membro_selecionado_foto"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/padrao" />
+
+        <TextView
+            android:id="@+id/membro_selecionado_nome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:text="Nome Sobrenome"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</LinearLayout>

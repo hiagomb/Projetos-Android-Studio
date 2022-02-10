@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,10 +15,15 @@ import com.bumptech.glide.Glide;
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.activity.MainActivity;
 import com.example.whatsappclone.fragment.ContatosFragment;
+import com.example.whatsappclone.helper.Base64Custom;
 import com.example.whatsappclone.helper.ConfigFirebase;
 import com.example.whatsappclone.model.Conversa;
 import com.example.whatsappclone.model.Usuario;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -42,18 +48,28 @@ public class AdapterListaContatos extends RecyclerView.Adapter<AdapterListaConta
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolderContatos holder, int position) {
+       /*vou recuperar dessa forma pois usuarios, contatos e conversas são nós diferentes
+       e eu só tenho a foto no nó usuários*/
+        String id_64;
+
         if(lista!= null){
             holder.nome_contato.setText(lista.get(position).getNome());
             holder.email_contato.setText(lista.get(position).getEmail());
-            Uri photo= Uri.parse(lista.get(position).getPhoto());
-            if(photo!= null){
-//                Glide.with(new MainActivity().getContext()).load(photo).into(holder.img_perfil);
-            }else{
+            id_64= Base64Custom.encode64(lista.get(position).getEmail());
 
+            if(lista.get(position).getEmail().isEmpty()){
+                holder.email_contato.setVisibility(LinearLayout.GONE);
+                holder.img_perfil.setImageResource(R.drawable.icone_grupo);
             }
+            if(lista.get(position).getPhoto()!= null){
+                Uri photo= Uri.parse(lista.get(position).getPhoto());
+                Glide.with(holder.img_perfil.getContext()).load(photo).into(holder.img_perfil);
+            }
+
         }else{
             holder.nome_contato.setText(lista_conversa.get(position).getNome());
             holder.email_contato.setText(lista_conversa.get(position).getMensagem());
+            id_64= lista_conversa.get(position).getId_usuario();
         }
 
     }

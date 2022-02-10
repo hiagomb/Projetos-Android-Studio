@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.activity.ConversaActivity;
+import com.example.whatsappclone.activity.GrupoActivity;
 import com.example.whatsappclone.adapter.AdapterListaContatos;
 import com.example.whatsappclone.helper.Base64Custom;
 import com.example.whatsappclone.helper.ConfigFirebase;
@@ -95,10 +96,34 @@ public class ContatosFragment extends Fragment {
                         recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent intent= new Intent(getActivity(), ConversaActivity.class);
-                        intent.putExtra("nomeContato", lista.get(position).getNome());
-                        intent.putExtra("emailContato", lista.get(position).getEmail());
-                        startActivity(intent);
+                        boolean cabecalho= lista.get(position).getEmail().isEmpty();
+                        if(cabecalho){
+                            Intent i= new Intent(getActivity(), GrupoActivity.class);
+                            startActivity(i);
+                        }else{
+                            String id_64= Base64Custom.encode64(lista.get(position).getEmail());
+                            DatabaseReference reference= ConfigFirebase.getFirebase().
+                                    child("usuarios").child(id_64);
+                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()){
+                                        Usuario u= snapshot.getValue(Usuario.class);
+
+                                        Intent intent= new Intent(getActivity(), ConversaActivity.class);
+                                        intent.putExtra("nomeContato", lista.get(position).getNome());
+                                        intent.putExtra("emailContato", lista.get(position).getEmail());
+                                        intent.putExtra("fotoContato", u.getPhoto());
+                                        startActivity(intent);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
                     }
 
                     @Override
@@ -112,6 +137,7 @@ public class ContatosFragment extends Fragment {
                     }
                 })
                 );
+
 
         return view;
     }
@@ -128,17 +154,39 @@ public class ContatosFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapterListaContatos);
 
+
+
         String email64 = Base64Custom.encode64(ConfigFirebase.getFirebaseAuth().getCurrentUser().getEmail());
         reference= ConfigFirebase.getFirebase().child("contatos").child(email64);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 lista.clear();
+                Usuario item_grupo= new Usuario();
+                item_grupo.setNome("Novo Grupo");
+                item_grupo.setEmail("");
+                lista.add(item_grupo);
                 for(DataSnapshot dados: snapshot.getChildren()){
-                    System.out.println("tteste1");
-                    lista.add(dados.getValue(Usuario.class));
+                    Usuario u= dados.getValue(Usuario.class);
+                    DatabaseReference ref_usuario= ConfigFirebase.getFirebase().
+                            child("usuarios").child(Base64Custom.encode64(u.getEmail()));
+                    ref_usuario.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists()){
+                                Usuario usuario_com_foto= snapshot.getValue(Usuario.class);
+                                lista.add(usuario_com_foto);
+                                adapterListaContatos.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                 }
-                adapterListaContatos.notifyDataSetChanged();
             }
 
             @Override

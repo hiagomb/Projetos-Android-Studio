@@ -7,7 +7,42 @@
     android:background="@drawable/background_conversa"
     tools:context=".activity.ConversaActivity">
 
-    <include layout="@layout/toolbar" android:id="@+id/toolbar_conversa"></include>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_conversa"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="0dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/MyThemeOverlay_Toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleMargin="1dp"
+        app:titleTextColor="@color/white">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_toolbar"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/padrao"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="10dp" />
+
+        <TextView
+            android:id="@+id/nome_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nome da Pessoa"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="51dp"
+            tools:layout_editor_absoluteY="18dp" />
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+<!--    <include layout="@layout/toolbar" android:id="@+id/toolbar_conversa"></include>-->
 
     <EditText
         android:id="@+id/input_message"
@@ -20,7 +55,12 @@
         android:ems="10"
         android:hint="Mensagem"
         android:inputType="textPersonName"
-        android:padding="10dp"
+        android:paddingStart="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="50dp"
+        android:paddingRight="50dp"
+        android:paddingBottom="10dp"
         android:textColor="@color/white"
         android:textColorHint="@color/browser_actions_title_color"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -50,5 +90,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_conversa" />
+
+    <ImageView
+        android:id="@+id/img_anexar_cam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/input_message"
+        app:layout_constraintEnd_toEndOf="@+id/input_message"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_conversa_unica"
+        app:srcCompat="@drawable/camera_branca" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -59,7 +59,7 @@ public class ConfiguracoesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configuracoes);
 
-        toolbar= findViewById(R.id.toolbar_configuracoes);
+        toolbar= findViewById(R.id.toolbar_principal);
         toolbar.setTitle("Configurações");
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         setSupportActionBar(toolbar);

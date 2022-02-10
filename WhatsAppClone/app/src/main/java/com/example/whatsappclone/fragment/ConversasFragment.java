@@ -20,6 +20,7 @@ import com.example.whatsappclone.helper.Base64Custom;
 import com.example.whatsappclone.helper.ConfigFirebase;
 import com.example.whatsappclone.helper.RecyclerItemClickListener;
 import com.example.whatsappclone.model.Conversa;
+import com.example.whatsappclone.model.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,12 +79,14 @@ public class ConversasFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private List<Conversa> lista;
+    private AdapterListaContatos adapterListaContatos;
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_conversas, container, false);
+        view = inflater.inflate(R.layout.fragment_conversas, container, false);
 
         recyclerView= view.findViewById(R.id.recycler_conversas);
         fill_lista_conversas(view);
@@ -90,11 +94,28 @@ public class ConversasFragment extends Fragment {
                         recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent intent= new Intent(getActivity(), ConversaActivity.class);
-                        intent.putExtra("nomeContato", lista.get(position).getNome());
-                        intent.putExtra("emailContato",
-                                Base64Custom.decode64(lista.get(position).getId_usuario()));
-                        startActivity(intent);
+                        DatabaseReference reference= ConfigFirebase.getFirebase().
+                                child("usuarios").child(lista.get(position).getId_usuario());
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.exists()){
+                                    Usuario u= snapshot.getValue(Usuario.class);
+                                    Intent intent= new Intent(getActivity(), ConversaActivity.class);
+                                    intent.putExtra("nomeContato", lista.get(position).getNome());
+                                    intent.putExtra("emailContato",
+                                            Base64Custom.decode64(lista.get(position).getId_usuario()));
+                                    intent.putExtra("fotoContato", u.getPhoto());
+                                    startActivity(intent);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
                     }
 
                     @Override
@@ -112,12 +133,16 @@ public class ConversasFragment extends Fragment {
         return view;
     }
 
+    public View getView(){
+        return this.view;
+    }
+
     public void fill_lista_conversas(View view){
         //vou usar o mesmo adapter do contatos
         lista= new ArrayList<>();
 
         //calling adapter
-        AdapterListaContatos adapterListaContatos= new AdapterListaContatos(null, lista);
+        adapterListaContatos= new AdapterListaContatos(null, lista);
 
         //setting recycler view
         RecyclerView.LayoutManager layoutManager= new LinearLayoutManager(view.getContext());
@@ -143,5 +168,28 @@ public class ConversasFragment extends Fragment {
 
             }
         });
+    }
+
+    public void pesquisar_conversas(String texto){
+        List<Conversa> lista_conversas_busca= new ArrayList<>();
+        for(Conversa conversa: lista){
+            String nome= conversa.getNome().toLowerCase();
+            System.out.println("nome: "+nome);
+            System.out.println("texto: "+texto);
+            if(nome.contains(texto)){
+                lista_conversas_busca.add(conversa);
+                System.out.println("teste de poesquisa");
+            }
+        }
+
+        adapterListaContatos= new AdapterListaContatos(null, lista_conversas_busca);
+        recyclerView.setAdapter(adapterListaContatos);
+        adapterListaContatos.notifyDataSetChanged();
+    }
+
+    public void recarregar_conversas(){
+        adapterListaContatos= new AdapterListaContatos(null, lista);
+        recyclerView.setAdapter(adapterListaContatos);
+        adapterListaContatos.notifyDataSetChanged();
     }
 }

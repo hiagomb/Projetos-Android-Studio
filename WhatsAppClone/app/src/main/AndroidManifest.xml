@@ -3,10 +3,12 @@
     package="com.example.whatsappclone">
 
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -16,9 +18,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsAppClone">
         <activity
-            android:name=".activity.ConfiguracoesActivity"
+            android:name=".activity.GrupoActivity"
+            android:exported="false"
+            android:label="@string/title_activity_grupo"
             android:parentActivityName=".activity.MainActivity"
-            android:exported="false" />
+            android:theme="@style/Theme.WhatsAppClone.NoActionBar" />
+        <activity
+            android:name=".activity.ConfiguracoesActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.MainActivity" />
         <activity
             android:name=".activity.ConversaActivity"
             android:exported="false"
