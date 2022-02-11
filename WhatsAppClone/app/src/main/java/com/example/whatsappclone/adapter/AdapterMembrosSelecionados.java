@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.whatsappclone.R;
-import com.example.whatsappclone.model.Conversa;
 import com.example.whatsappclone.model.Usuario;
 
 import java.util.List;
@@ -56,7 +55,7 @@ public class AdapterMembrosSelecionados extends RecyclerView.Adapter<AdapterMemb
         public MyViewHolderMembros(@NonNull View itemView) {
             super(itemView);
             nome_membro= itemView.findViewById(R.id.membro_selecionado_nome);
-            imagem_membro= itemView.findViewById(R.id.membro_selecionado_foto);
+            imagem_membro= itemView.findViewById(R.id.img_grupo_criar);
         }
     }
 

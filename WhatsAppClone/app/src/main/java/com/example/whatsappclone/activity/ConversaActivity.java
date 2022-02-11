@@ -15,6 +15,7 @@ import com.example.whatsappclone.helper.Base64Custom;
 import com.example.whatsappclone.helper.ConfigFirebase;
 import com.example.whatsappclone.helper.Permission;
 import com.example.whatsappclone.model.Conversa;
+import com.example.whatsappclone.model.Grupo;
 import com.example.whatsappclone.model.Mensagem;
 import com.example.whatsappclone.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,7 +54,7 @@ import java.util.UUID;
 public class ConversaActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private String nome_dest, email_dest, foto_contato;
+    private String nome_dest, email_dest, foto_contato, is_group;
     private EditText input_message;
     private ImageButton btn_send;
     private RecyclerView recycler_cv_unica;
@@ -64,6 +65,8 @@ public class ConversaActivity extends AppCompatActivity {
     private TextView texto_toolbar;
     public String aux_id;
     private ImageView img_camera;
+    private Grupo grupo;
+    private String email_dest_64;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,14 @@ public class ConversaActivity extends AppCompatActivity {
             nome_dest= extra.getString("nomeContato");
             email_dest= extra.getString("emailContato");
             foto_contato= extra.getString("fotoContato");
+            is_group= extra.getString("is_group");
+            if(is_group.equalsIgnoreCase("true")){
+                grupo= (Grupo) extra.getSerializable("grupo");
+                email_dest_64= email_dest;
+            }else{
+                email_dest_64= Base64Custom.encode64(email_dest);
+            }
+
         }
 
         toolbar= findViewById(R.id.toolbar_conversa);
@@ -118,56 +129,76 @@ public class ConversaActivity extends AppCompatActivity {
                     String id= Base64Custom.encode64(ConfigFirebase.getFirebaseAuth().getCurrentUser().getEmail());
                     mensagem.setId_rem(id);
                     mensagem.setMessage(message);
-                    String email_dest_64= Base64Custom.encode64(email_dest);
+
+
 
                     reference= ConfigFirebase.getFirebase();
-                    reference.child("mensagens").child(id).child(email_dest_64).push().
-                            setValue(mensagem);
-                    reference.child("mensagens").child(email_dest_64).child(id).push().
-                            setValue(mensagem);
+                    if(is_group.equalsIgnoreCase("true")){
+                        for(Usuario usuario: grupo.getMembros()){
+                            String usuario_id= Base64Custom.encode64(usuario.getEmail());
+                            reference.child("mensagens").child(usuario_id).child(email_dest).
+                                    push().setValue(mensagem);
+                            Conversa conversa= new Conversa();
+                            conversa.setId_usuario(email_dest);
+                            conversa.setMensagem(message);
+                            reference.child("conversas").child(usuario_id).child(email_dest).
+                                    setValue(conversa);
+                        }
+                    }else{
+                        reference.child("mensagens").child(id).child(email_dest_64).push().
+                                setValue(mensagem);
+                        reference.child("mensagens").child(email_dest_64).child(id).push().
+                                setValue(mensagem);
+                        Conversa conversa= new Conversa();
 
-                    Conversa conversa= new Conversa();
+                        //pegando o nome do destinatario
+                        reference.child("usuarios").child(email_dest_64).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.getValue()!= null){
+                                    Usuario u= snapshot.getValue(Usuario.class);
 
-                    //pegando o nome do destinatario
-                    reference.child("usuarios").child(email_dest_64).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(snapshot.getValue()!= null){
-                                Usuario u= snapshot.getValue(Usuario.class);
-
-                                conversa.setId_usuario(email_dest_64);
-                                conversa.setMensagem(message);
-                                conversa.setNome(u.getNome());
-                                reference.child("conversas").child(id).child(email_dest_64).setValue(conversa);
+                                    conversa.setId_usuario(email_dest_64);
+                                    conversa.setMensagem(message);
+                                    if(is_group.equalsIgnoreCase("true")){
+                                        conversa.setNome(grupo.getNome());
+                                    }else{
+                                        conversa.setNome(u.getNome());
+                                    }
+                                    reference.child("conversas").child(id).child(email_dest_64).setValue(conversa);
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
-
-
-
-                    //tenho que inverter os atributos do objeto para salvar no destinatario
-
-                    reference.child("usuarios").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(snapshot.getValue()!= null){
-                                Usuario u= snapshot.getValue(Usuario.class);
-                                conversa.setNome(u.getNome());
-                                conversa.setId_usuario(id);
-                                reference.child("conversas").child(email_dest_64).child(id).setValue(conversa);
                             }
-                        }
+                        });
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
+
+                        //tenho que inverter os atributos do objeto para salvar no destinatario
+
+                        reference.child("usuarios").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.getValue()!= null){
+                                    Usuario u= snapshot.getValue(Usuario.class);
+                                    conversa.setNome(u.getNome());
+                                    conversa.setId_usuario(id);
+                                    reference.child("conversas").child(email_dest_64).child(id).setValue(conversa);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+
+
+
 
 
                     input_message.setText("");
@@ -203,7 +234,7 @@ public class ConversaActivity extends AppCompatActivity {
                                 mensagem.setId_rem(email_id);
                                 mensagem.setMessage("imagem.jpeg");
                                 mensagem.setFoto(uri.toString());
-                                String email_dest_64= Base64Custom.encode64(email_dest);
+//                                String email_dest_64= Base64Custom.encode64(email_dest);
 
                                 reference= ConfigFirebase.getFirebase();
                                 reference.child("mensagens").child(email_id).child(email_dest_64).push().
@@ -233,8 +264,15 @@ public class ConversaActivity extends AppCompatActivity {
         String user_source= Base64Custom.encode64(ConfigFirebase.getFirebaseAuth().getCurrentUser().getEmail());
         String user_dest= Base64Custom.encode64(email_dest);
 
-        DatabaseReference ref_user= ConfigFirebase.getFirebase().child("mensagens").
-                child(user_source).child(user_dest);
+        DatabaseReference ref_user = null;
+
+        if(is_group.equalsIgnoreCase("true")){
+            ref_user= ConfigFirebase.getFirebase().child("mensagens").
+                    child(user_source).child(email_dest);
+        }else{
+            ref_user= ConfigFirebase.getFirebase().child("mensagens").
+                    child(user_source).child(user_dest);
+        }
 
         ref_user.addValueEventListener(new ValueEventListener() {
             @Override

@@ -1,5 +1,6 @@
 package com.example.whatsappclone.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.whatsappclone.adapter.AdapterListaContatos;
@@ -9,11 +10,13 @@ import com.example.whatsappclone.helper.Base64Custom;
 import com.example.whatsappclone.helper.ConfigFirebase;
 import com.example.whatsappclone.helper.RecyclerItemClickListener;
 import com.example.whatsappclone.model.Usuario;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -31,31 +34,31 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GrupoActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
-//    private ActivityGrupoBinding binding;
     private RecyclerView rv_todos_mebros, rv_membros_selecionados;
-    private List<Usuario> lista_membros, lista_membros_selecionados;
+    private List<Usuario> lista_membros;
+    private List<Usuario> lista_membros_selecionados = new ArrayList<>();
     private AdapterListaContatos adapterListaContatos;
     private AdapterMembrosSelecionados adapterMembrosSelecionados;
     private Toolbar toolbar_grupo;
+    private FloatingActionButton fab_grupo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        binding = ActivityGrupoBinding.inflate(getLayoutInflater());
-//        setContentView(binding.getRoot());
         setContentView(R.layout.activity_grupo);
 
 
         toolbar_grupo= findViewById(R.id.toolbar_grupo);
         setSupportActionBar(toolbar_grupo);
 
+        fab_grupo= findViewById(R.id.fab_grupo_forward);
 
 
 
@@ -63,13 +66,7 @@ public class GrupoActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-//        binding.fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Novo grupo");
 
@@ -79,7 +76,7 @@ public class GrupoActivity extends AppCompatActivity {
 
 
         //calling adapter para membros selecionados
-        lista_membros_selecionados= new ArrayList<>();
+//        lista_membros_selecionados= new ArrayList<>();
 
         adapterMembrosSelecionados = new AdapterMembrosSelecionados(lista_membros_selecionados);
 
@@ -119,6 +116,7 @@ public class GrupoActivity extends AppCompatActivity {
         }));
 
 
+
         rv_todos_mebros.addOnItemTouchListener(new RecyclerItemClickListener(
                 getApplicationContext(), rv_todos_mebros, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
@@ -127,6 +125,8 @@ public class GrupoActivity extends AppCompatActivity {
                 lista_membros_selecionados.add(usuario_selecionado);
                 adapterMembrosSelecionados= new AdapterMembrosSelecionados(lista_membros_selecionados);
                 rv_membros_selecionados.setAdapter(adapterMembrosSelecionados);
+
+
 
                 lista_membros.remove(usuario_selecionado);
                 adapterListaContatos= new AdapterListaContatos(lista_membros, null);
@@ -146,6 +146,22 @@ public class GrupoActivity extends AppCompatActivity {
 
             }
         }));
+        fab_grupo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i= new Intent(GrupoActivity.this, GrupoCadastroActivity.class);
+                i.putExtra("membros", (Serializable) lista_membros_selecionados);
+                startActivity(i);
+            }
+        });
+    }
+
+    public List<Usuario> getLista_membros_selecionados(){
+        return lista_membros_selecionados;
+    }
+
+    public void setLista_membros_selecionados(List<Usuario> lista_membros_selecionados){
+        this.lista_membros_selecionados= lista_membros_selecionados;
     }
 
     @Override

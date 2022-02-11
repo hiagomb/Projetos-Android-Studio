@@ -11,10 +11,12 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.whatsappclone.R;
 
 import com.example.whatsappclone.databinding.FragmentFirstBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
+    private FloatingActionButton fab_teste;
 
     @Override
     public View onCreateView(
@@ -23,6 +25,7 @@ public class FirstFragment extends Fragment {
     ) {
 
         binding = FragmentFirstBinding.inflate(inflater, container, false);
+//        fab_teste= binding.recyclerMembrosSelecionados;
         return binding.getRoot();
 
     }

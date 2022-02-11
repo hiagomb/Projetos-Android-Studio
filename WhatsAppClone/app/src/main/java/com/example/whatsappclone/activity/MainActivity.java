@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!newText.isEmpty()){
                     conversasFragment.pesquisar_conversas(newText.toLowerCase());
                 }else{
-                    conversasFragment.recarregar_conversas();
+//                    conversasFragment.recarregar_conversas();
                 }
                 return true;
             }

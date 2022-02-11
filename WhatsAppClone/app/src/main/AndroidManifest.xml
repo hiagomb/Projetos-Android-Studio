@@ -18,6 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsAppClone">
         <activity
+            android:name=".activity.GrupoCadastroActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.GrupoActivity"/>
+        <activity
             android:name=".activity.GrupoActivity"
             android:exported="false"
             android:label="@string/title_activity_grupo"

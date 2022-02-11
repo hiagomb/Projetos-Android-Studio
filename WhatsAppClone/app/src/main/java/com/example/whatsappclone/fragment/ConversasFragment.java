@@ -94,27 +94,39 @@ public class ConversasFragment extends Fragment {
                         recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        DatabaseReference reference= ConfigFirebase.getFirebase().
-                                child("usuarios").child(lista.get(position).getId_usuario());
-                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.exists()){
-                                    Usuario u= snapshot.getValue(Usuario.class);
-                                    Intent intent= new Intent(getActivity(), ConversaActivity.class);
-                                    intent.putExtra("nomeContato", lista.get(position).getNome());
-                                    intent.putExtra("emailContato",
-                                            Base64Custom.decode64(lista.get(position).getId_usuario()));
-                                    intent.putExtra("fotoContato", u.getPhoto());
-                                    startActivity(intent);
+                        if(lista.get(position).getIsGroup().equalsIgnoreCase("true")){
+                            Intent intent= new Intent(getActivity(), ConversaActivity.class);
+                            intent.putExtra("nomeContato", lista.get(position).getGrupo().getNome());
+                            intent.putExtra("emailContato", lista.get(position).getId_usuario());
+                            intent.putExtra("fotoContato", lista.get(position).getGrupo().getFoto());
+                            intent.putExtra("grupo", lista.get(position).getGrupo());
+                            intent.putExtra("is_group", "true");
+                            startActivity(intent);
+                        }else{
+                            DatabaseReference reference= ConfigFirebase.getFirebase().
+                                    child("usuarios").child(lista.get(position).getId_usuario());
+                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()){
+                                        Usuario u= snapshot.getValue(Usuario.class);
+                                        Intent intent= new Intent(getActivity(), ConversaActivity.class);
+                                        intent.putExtra("nomeContato", lista.get(position).getNome());
+                                        intent.putExtra("emailContato",
+                                                Base64Custom.decode64(lista.get(position).getId_usuario()));
+                                        intent.putExtra("fotoContato", u.getPhoto());
+                                        intent.putExtra("is_group", "false");
+
+                                        startActivity(intent);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
+                                }
+                            });
+                        }
 
                     }
 
@@ -159,6 +171,7 @@ public class ConversasFragment extends Fragment {
                 lista.clear();
                 for(DataSnapshot dados: snapshot.getChildren()){
                     lista.add(dados.getValue(Conversa.class));
+                    System.out.println("teste: "+dados.getKey());
                 }
                 adapterListaContatos.notifyDataSetChanged();
             }

@@ -67,9 +67,38 @@ public class AdapterListaContatos extends RecyclerView.Adapter<AdapterListaConta
             }
 
         }else{
-            holder.nome_contato.setText(lista_conversa.get(position).getNome());
+            if(lista_conversa.get(position).getIsGroup().equalsIgnoreCase("true")){
+                holder.nome_contato.setText(lista_conversa.get(position).getGrupo().getNome());
+                String uri= lista_conversa.get(position).getGrupo().getFoto();
+                if(uri!= null && !uri.isEmpty()){
+                    Uri uri_photo= Uri.parse(uri);
+                    Glide.with(holder.img_perfil.getContext()).load(uri_photo).into(holder.img_perfil);
+                }
+            }else{
+                holder.nome_contato.setText(lista_conversa.get(position).getNome());
+            }
+
             holder.email_contato.setText(lista_conversa.get(position).getMensagem());
             id_64= lista_conversa.get(position).getId_usuario();
+            DatabaseReference reference= ConfigFirebase.getFirebase().child("usuarios").child(id_64);
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        Usuario u= snapshot.getValue(Usuario.class);
+                        if(u.getPhoto()!= null && !u.getPhoto().isEmpty()){
+                            Uri uri_imagem= Uri.parse(u.getPhoto());
+                            Glide.with(holder.img_perfil.getContext()).load(uri_imagem).into(holder.img_perfil);
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
     }

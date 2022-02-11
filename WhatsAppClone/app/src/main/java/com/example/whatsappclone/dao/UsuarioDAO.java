@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.concurrent.Executor;
@@ -80,7 +81,9 @@ public class UsuarioDAO implements IUsuarioDAO{
     @Override
     public boolean salvar_usuario(Usuario usuario) {
         reference.child("usuarios").child(usuario.getId()).setValue(usuario);
-
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(usuario.getNome()).build();
+        ConfigFirebase.getFirebaseAuth().getCurrentUser().updateProfile(profileUpdates);
         return true;
     }
 

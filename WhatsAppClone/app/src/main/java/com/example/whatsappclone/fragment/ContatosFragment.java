@@ -114,6 +114,7 @@ public class ContatosFragment extends Fragment {
                                         intent.putExtra("nomeContato", lista.get(position).getNome());
                                         intent.putExtra("emailContato", lista.get(position).getEmail());
                                         intent.putExtra("fotoContato", u.getPhoto());
+                                        intent.putExtra("is_group", "false");
                                         startActivity(intent);
                                     }
                                 }
