@@ -50,7 +50,14 @@ public class AdapterListaConversaUnica extends RecyclerView.Adapter<AdapterLista
                 Glide.with(holder.img_remetente.getContext()).load(uri).into(holder.img_remetente);
                 holder.message_send.setVisibility(LinearLayout.GONE);
             }else{
-                holder.right_foto.setVisibility(LinearLayout.GONE);
+                holder.img_remetente.setVisibility(LinearLayout.GONE);
+            }
+
+            //setting the name if is group
+            if(lista.get(position).getIs_group().equalsIgnoreCase("true")){
+                holder.nome_remetente.setText("Você");
+            }else{
+                holder.nome_remetente.setVisibility(LinearLayout.GONE);
             }
         }else{
             holder.layout_left.setVisibility(LinearLayout.VISIBLE);
@@ -62,7 +69,14 @@ public class AdapterListaConversaUnica extends RecyclerView.Adapter<AdapterLista
                 Glide.with(holder.img_dest.getContext()).load(uri).into(holder.img_dest);
                 holder.message_received.setVisibility(LinearLayout.GONE);
             }else{
-                holder.left_foto.setVisibility(LinearLayout.GONE);
+                holder.img_dest.setVisibility(LinearLayout.GONE);
+            }
+
+            //setting the name if is group
+            if(lista.get(position).getIs_group().equalsIgnoreCase("true")){
+                holder.nome_destinatario.setText(lista.get(position).getNome_usuario_for_group());
+            }else{
+                holder.nome_destinatario.setVisibility(LinearLayout.GONE);
             }
         }
 
@@ -75,20 +89,20 @@ public class AdapterListaConversaUnica extends RecyclerView.Adapter<AdapterLista
 
     public class MyViewHolderContatos extends RecyclerView.ViewHolder{
 
-        private TextView message_send, message_received;
-        private LinearLayout layout_left, layout_right, left_foto, right_foto;
+        private TextView message_send, message_received, nome_remetente, nome_destinatario;
+        private LinearLayout layout_left, layout_right;
         private ImageView img_remetente, img_dest;
 
         public MyViewHolderContatos(@NonNull View itemView) {
             super(itemView);
             layout_left= itemView.findViewById(R.id.chat_left_msg_layout);
             layout_right= itemView.findViewById(R.id.chat_right_msg_layout);
-            left_foto= itemView.findViewById(R.id.chat_left_foto);
-            right_foto= itemView.findViewById(R.id.chat_right_foto);
             message_send= itemView.findViewById(R.id.id_message_send);
             message_received= itemView.findViewById(R.id.id_message_received);
             img_remetente= itemView.findViewById(R.id.img_foto_remetente);
             img_dest= itemView.findViewById(R.id.img_foto_destinatario);
+            nome_remetente= itemView.findViewById(R.id.id_nome_remetente);
+            nome_destinatario= itemView.findViewById(R.id.id_nome_destinatario);
         }
     }
 }

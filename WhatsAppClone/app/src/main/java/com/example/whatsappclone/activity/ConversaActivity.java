@@ -136,15 +136,21 @@ public class ConversaActivity extends AppCompatActivity {
                     if(is_group.equalsIgnoreCase("true")){
                         for(Usuario usuario: grupo.getMembros()){
                             String usuario_id= Base64Custom.encode64(usuario.getEmail());
+                            mensagem.setIs_group("true");
+                            mensagem.setId_dest(email_dest);
+                            mensagem.setNome_usuario_for_group(ConfigFirebase.getUsuarioLogado().getNome());
                             reference.child("mensagens").child(usuario_id).child(email_dest).
                                     push().setValue(mensagem);
                             Conversa conversa= new Conversa();
+                            conversa.setIsGroup("true");
+                            conversa.setGrupo(grupo);
                             conversa.setId_usuario(email_dest);
                             conversa.setMensagem(message);
                             reference.child("conversas").child(usuario_id).child(email_dest).
                                     setValue(conversa);
                         }
                     }else{
+                        mensagem.setIs_group("false");
                         reference.child("mensagens").child(id).child(email_dest_64).push().
                                 setValue(mensagem);
                         reference.child("mensagens").child(email_dest_64).child(id).push().
@@ -234,13 +240,25 @@ public class ConversaActivity extends AppCompatActivity {
                                 mensagem.setId_rem(email_id);
                                 mensagem.setMessage("imagem.jpeg");
                                 mensagem.setFoto(uri.toString());
-//                                String email_dest_64= Base64Custom.encode64(email_dest);
 
                                 reference= ConfigFirebase.getFirebase();
-                                reference.child("mensagens").child(email_id).child(email_dest_64).push().
-                                        setValue(mensagem);
-                                reference.child("mensagens").child(email_dest_64).child(email_id).push().
-                                        setValue(mensagem);
+
+                                if(is_group.equalsIgnoreCase("true")){
+                                    mensagem.setIs_group("true");
+                                    mensagem.setId_dest(email_dest);
+                                    for(Usuario u: grupo.getMembros()){
+                                        String usuario_id= Base64Custom.encode64(u.getEmail());
+                                        mensagem.setNome_usuario_for_group(ConfigFirebase.getUsuarioLogado().getNome());
+                                        reference.child("mensagens").child(usuario_id).child(email_dest).
+                                                push().setValue(mensagem);
+                                    }
+                                }else{
+                                    mensagem.setIs_group("false");
+                                    reference.child("mensagens").child(email_id).child(email_dest_64).push().
+                                            setValue(mensagem);
+                                    reference.child("mensagens").child(email_dest_64).child(email_id).push().
+                                            setValue(mensagem);
+                                }
                             }
                         });
                     }

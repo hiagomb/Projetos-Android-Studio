@@ -94,26 +94,27 @@ public class ConversasFragment extends Fragment {
                         recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        if(lista.get(position).getIsGroup().equalsIgnoreCase("true")){
+                        List<Conversa> lista_atualizada= adapterListaContatos.getListaConversas();
+                        if(lista_atualizada.get(position).getIsGroup().equalsIgnoreCase("true")){
                             Intent intent= new Intent(getActivity(), ConversaActivity.class);
-                            intent.putExtra("nomeContato", lista.get(position).getGrupo().getNome());
-                            intent.putExtra("emailContato", lista.get(position).getId_usuario());
-                            intent.putExtra("fotoContato", lista.get(position).getGrupo().getFoto());
-                            intent.putExtra("grupo", lista.get(position).getGrupo());
+                            intent.putExtra("nomeContato", lista_atualizada.get(position).getGrupo().getNome());
+                            intent.putExtra("emailContato", lista_atualizada.get(position).getId_usuario());
+                            intent.putExtra("fotoContato", lista_atualizada.get(position).getGrupo().getFoto());
+                            intent.putExtra("grupo", lista_atualizada.get(position).getGrupo());
                             intent.putExtra("is_group", "true");
                             startActivity(intent);
                         }else{
                             DatabaseReference reference= ConfigFirebase.getFirebase().
-                                    child("usuarios").child(lista.get(position).getId_usuario());
+                                    child("usuarios").child(lista_atualizada.get(position).getId_usuario());
                             reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if(snapshot.exists()){
                                         Usuario u= snapshot.getValue(Usuario.class);
                                         Intent intent= new Intent(getActivity(), ConversaActivity.class);
-                                        intent.putExtra("nomeContato", lista.get(position).getNome());
+                                        intent.putExtra("nomeContato", lista_atualizada.get(position).getNome());
                                         intent.putExtra("emailContato",
-                                                Base64Custom.decode64(lista.get(position).getId_usuario()));
+                                                Base64Custom.decode64(lista_atualizada.get(position).getId_usuario()));
                                         intent.putExtra("fotoContato", u.getPhoto());
                                         intent.putExtra("is_group", "false");
 
@@ -186,12 +187,14 @@ public class ConversasFragment extends Fragment {
     public void pesquisar_conversas(String texto){
         List<Conversa> lista_conversas_busca= new ArrayList<>();
         for(Conversa conversa: lista){
-            String nome= conversa.getNome().toLowerCase();
-            System.out.println("nome: "+nome);
-            System.out.println("texto: "+texto);
+            String nome= "";
+            if(conversa.getIsGroup().equalsIgnoreCase("true")){
+                nome= conversa.getGrupo().getNome().toLowerCase();
+            }else{
+                nome= conversa.getNome().toLowerCase();
+            }
             if(nome.contains(texto)){
                 lista_conversas_busca.add(conversa);
-                System.out.println("teste de poesquisa");
             }
         }
 

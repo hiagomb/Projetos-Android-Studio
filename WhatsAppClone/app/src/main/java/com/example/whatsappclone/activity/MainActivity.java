@@ -75,13 +75,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                ConversasFragment conversasFragment=
-                        (ConversasFragment) adapter.getPage(0);
+                ConversasFragment conversasFragment= (ConversasFragment) adapter.getPage(0);
+                ContatosFragment contatosFragment= (ContatosFragment) adapter.getPage(1);
                 if(!newText.isEmpty()){
                     conversasFragment.pesquisar_conversas(newText.toLowerCase());
+                    contatosFragment.pesquisar_contatos(newText.toLowerCase());
                 }else{
-//                    conversasFragment.recarregar_conversas();
+                    conversasFragment.recarregar_conversas();
+                    contatosFragment.recarregar_contatos();
                 }
+
                 return true;
             }
         });
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 ConversasFragment conversasFragment=
                         (ConversasFragment) adapter.getPage(0);
                 conversasFragment.recarregar_conversas();
+
             }
         });
     }

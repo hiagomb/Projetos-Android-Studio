@@ -77,8 +77,11 @@ public final class ConfigFirebase {
         FirebaseUser firebaseUser= getFirebaseAuth().getCurrentUser();
         usuario.setId(Base64Custom.encode64(firebaseUser.getEmail()));
         usuario.setEmail(firebaseUser.getEmail());
-        usuario.setPhoto(firebaseUser.getPhotoUrl().toString());
+        if(firebaseUser.getPhotoUrl()!= null){
+            usuario.setPhoto(firebaseUser.getPhotoUrl().toString());
+        }
         usuario.setNome(firebaseUser.getDisplayName());
+
 
         return usuario;
     }

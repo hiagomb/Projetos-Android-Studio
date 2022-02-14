@@ -38,6 +38,14 @@ public class AdapterListaContatos extends RecyclerView.Adapter<AdapterListaConta
         this.lista_conversa= lista_conversa;
     }
 
+    public List<Conversa> getListaConversas(){
+        return this.lista_conversa;
+    }
+
+    public List<Usuario> getListaContatos(){
+        return this.lista;
+    }
+
     @NonNull
     @Override
     public MyViewHolderContatos onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

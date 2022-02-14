@@ -22,6 +22,7 @@ import com.example.whatsappclone.adapter.AdapterListaContatos;
 import com.example.whatsappclone.helper.Base64Custom;
 import com.example.whatsappclone.helper.ConfigFirebase;
 import com.example.whatsappclone.helper.RecyclerItemClickListener;
+import com.example.whatsappclone.model.Conversa;
 import com.example.whatsappclone.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -82,6 +83,7 @@ public class ContatosFragment extends Fragment {
     private RecyclerView recyclerView;
     private DatabaseReference reference;
     List<Usuario> lista;
+    private AdapterListaContatos adapterListaContatos;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,12 +98,14 @@ public class ContatosFragment extends Fragment {
                         recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        boolean cabecalho= lista.get(position).getEmail().isEmpty();
+                        List<Usuario> lista_atualizada= adapterListaContatos.getListaContatos();
+
+                        boolean cabecalho= lista_atualizada.get(position).getEmail().isEmpty();
                         if(cabecalho){
                             Intent i= new Intent(getActivity(), GrupoActivity.class);
                             startActivity(i);
                         }else{
-                            String id_64= Base64Custom.encode64(lista.get(position).getEmail());
+                            String id_64= Base64Custom.encode64(lista_atualizada.get(position).getEmail());
                             DatabaseReference reference= ConfigFirebase.getFirebase().
                                     child("usuarios").child(id_64);
                             reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -111,8 +115,8 @@ public class ContatosFragment extends Fragment {
                                         Usuario u= snapshot.getValue(Usuario.class);
 
                                         Intent intent= new Intent(getActivity(), ConversaActivity.class);
-                                        intent.putExtra("nomeContato", lista.get(position).getNome());
-                                        intent.putExtra("emailContato", lista.get(position).getEmail());
+                                        intent.putExtra("nomeContato", lista_atualizada.get(position).getNome());
+                                        intent.putExtra("emailContato", lista_atualizada.get(position).getEmail());
                                         intent.putExtra("fotoContato", u.getPhoto());
                                         intent.putExtra("is_group", "false");
                                         startActivity(intent);
@@ -147,7 +151,7 @@ public class ContatosFragment extends Fragment {
         lista= new ArrayList<>();
 
         //calling adapter
-        AdapterListaContatos adapterListaContatos= new AdapterListaContatos(lista, null);
+        adapterListaContatos= new AdapterListaContatos(lista, null);
 
         //setting recycler view
         RecyclerView.LayoutManager layoutManager= new LinearLayoutManager(view.getContext());
@@ -195,8 +199,27 @@ public class ContatosFragment extends Fragment {
 
             }
         });
-
-
-
     }
+
+    public void pesquisar_contatos(String texto){
+        List<Usuario> lista_contatos_busca= new ArrayList<>();
+        for(Usuario usuario: lista){
+            String nome= usuario.getNome().toLowerCase();
+            if(nome.contains(texto)){
+                lista_contatos_busca.add(usuario);
+            }
+        }
+
+        adapterListaContatos= new AdapterListaContatos(lista_contatos_busca, null);
+        recyclerView.setAdapter(adapterListaContatos);
+        adapterListaContatos.notifyDataSetChanged();
+    }
+
+    public void recarregar_contatos(){
+        adapterListaContatos= new AdapterListaContatos(lista, null);
+        recyclerView.setAdapter(adapterListaContatos);
+        adapterListaContatos.notifyDataSetChanged();
+    }
+
+
 }
