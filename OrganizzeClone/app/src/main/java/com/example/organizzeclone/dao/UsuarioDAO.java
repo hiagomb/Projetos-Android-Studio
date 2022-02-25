@@ -1,10 +1,12 @@
 package com.example.organizzeclone.dao;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.organizzeclone.activity.PrincipalActivity;
 import com.example.organizzeclone.helper.Base64Mine;
 import com.example.organizzeclone.helper.FirebaseSettings;
 import com.example.organizzeclone.model.Usuario;
@@ -37,7 +39,6 @@ public class UsuarioDAO {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             usuario.setId(Base64Mine.encode(usuario.getEmail()));
-                            System.out.println("ID: "+usuario.getId());
                             databaseReference.child("usuarios").child(usuario.getId()).
                                     setValue(usuario);
                             Toast.makeText(context, "Cadastro realizado com sucesso",
@@ -63,6 +64,26 @@ public class UsuarioDAO {
                         }
                     }
                 });
+        return true;
+    }
+
+    public boolean logar(Usuario usuario){
+        FirebaseAuth firebaseAuth= FirebaseSettings.getFirebaseAuth();
+        firebaseAuth.signInWithEmailAndPassword(usuario.getEmail(),
+                usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(context, "Bem vindo "+usuario.getEmail(),
+                            Toast.LENGTH_SHORT).show();
+                    context.startActivity(new Intent(context, PrincipalActivity.class));
+                }else{
+                    Toast.makeText(context, "Email ou senha incorretos",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         return true;
     }
 

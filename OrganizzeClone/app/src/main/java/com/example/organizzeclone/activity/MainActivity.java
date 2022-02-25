@@ -42,7 +42,7 @@ public class MainActivity extends IntroActivity {
                 .fragment(R.layout.intro_4).build());
 
         addSlide(new FragmentSlide.Builder()
-                .background(R.color.white)
+                .background(R.color.white).canGoForward(false)
                 .fragment(R.layout.fragment_cadastro_login).build());
 
 

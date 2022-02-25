@@ -10,6 +10,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OrganizzeClone">
         <activity
+            android:name=".activity.DespesasActivity"
+            android:exported="false"
+            android:theme="@style/despesaTheme"/>
+        <activity
+            android:name=".activity.ReceitasActivity"
+            android:exported="false"
+            android:theme="@style/receitaTheme"/>
+        <activity
+            android:name=".activity.PrincipalActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity
