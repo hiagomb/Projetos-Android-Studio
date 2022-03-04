@@ -8,7 +8,8 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
-
+    private Double despesa_total;
+    private Double receita_total;
 
     public Usuario() {
     }
@@ -46,5 +47,21 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public Double getDespesa_total() {
+        return despesa_total;
+    }
+
+    public void setDespesa_total(Double despesa_total) {
+        this.despesa_total = despesa_total;
+    }
+
+    public Double getReceita_total() {
+        return receita_total;
+    }
+
+    public void setReceita_total(Double receita_total) {
+        this.receita_total = receita_total;
     }
 }

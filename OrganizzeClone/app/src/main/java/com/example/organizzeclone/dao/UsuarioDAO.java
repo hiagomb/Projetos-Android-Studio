@@ -39,8 +39,11 @@ public class UsuarioDAO {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             usuario.setId(Base64Mine.encode(usuario.getEmail()));
+                            usuario.setDespesa_total(0.00);
+                            usuario.setReceita_total(0.00);
                             databaseReference.child("usuarios").child(usuario.getId()).
                                     setValue(usuario);
+
                             Toast.makeText(context, "Cadastro realizado com sucesso",
                                     Toast.LENGTH_SHORT).show();
                         }else{

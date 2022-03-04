@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.organizzeclone.R;
+import com.example.organizzeclone.helper.FirebaseSettings;
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 
@@ -20,6 +21,10 @@ public class MainActivity extends IntroActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(FirebaseSettings.getFirebaseAuth().getCurrentUser()!= null){
+            startActivity(new Intent(this, PrincipalActivity.class));
+        }
 
         setButtonBackVisible(false);
         setButtonNextVisible(false);
