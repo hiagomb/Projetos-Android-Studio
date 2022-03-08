@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.requisieshttp.api.CepService;
+import com.example.requisieshttp.model.Cep;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,10 +22,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button btn_recuperar;
     private TextView txt_resultado;
+    private Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +45,35 @@ public class MainActivity extends AppCompatActivity {
         btn_recuperar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyTask myTask= new MyTask();
-                String url_api= "https://blockchain.info/ticker";
-                String url_api2= "https://viacep.com.br/ws/15170000/json/";
-                myTask.execute(url_api, url_api2);
+                retrofit= new Retrofit.Builder().
+                        baseUrl("https://viacep.com.br/ws/  ")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                recuperar_retrofit();
+//                MyTask myTask= new MyTask();
+//                String url_api= "https://blockchain.info/ticker";
+//                String url_api2= "https://viacep.com.br/ws/15170000/json/";
+//                myTask.execute(url_api, url_api2);
+            }
+        });
+    }
+
+    private void recuperar_retrofit(){
+        CepService cepService= retrofit.create(CepService.class);
+        Call<Cep> call= cepService.recuperarCep();
+
+        call.enqueue(new Callback<Cep>() {
+            @Override
+            public void onResponse(Call<Cep> call, Response<Cep> response) {
+                if(response.isSuccessful()){
+                    Cep cep= response.body();
+                    txt_resultado.setText(cep.getLocalidade());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Cep> call, Throwable t) {
+
             }
         });
     }
