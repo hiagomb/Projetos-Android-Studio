@@ -18,10 +18,11 @@
         tools:context=".activity.PassageiroActivity" />
 
     <LinearLayout
+        android:id="@+id/linear_pass"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/white"
         android:orientation="vertical"
@@ -56,7 +57,8 @@
                 android:drawableLeft="@drawable/circle_verde"
                 android:drawablePadding="6dp"
                 android:drawableTint="#808080"
-                android:hint="Digite seu destino" />
+                android:hint="Digite seu destino"
+                android:inputType="textNoSuggestions|text" />
 
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
@@ -67,7 +69,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="chamar_uber"
         android:text="chamar uber"
         app:layout_constraintBottom_toBottomOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent"
