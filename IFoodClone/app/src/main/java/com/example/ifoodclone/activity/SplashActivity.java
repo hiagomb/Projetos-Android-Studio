@@ -15,7 +15,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        getSupportActionBar().hide();
         //exibe por apenas 3 segundos
         new Handler().postDelayed(new Runnable() {
             @Override

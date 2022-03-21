@@ -10,6 +10,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IFoodClone">
         <activity
+            android:name=".activity.ConfiguracaoesClienteActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.HomeActivity"/>
+        <activity
+            android:name=".activity.NovoProdutoActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.EmpresaActivity" />
+        <activity
+            android:name=".activity.ConfiguracoesEmpresaActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.EmpresaActivity" />
+        <activity
+            android:name=".activity.EmpresaActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.HomeActivity"
             android:exported="false" />
         <activity
