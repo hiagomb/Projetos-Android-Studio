@@ -19,13 +19,19 @@ import android.widget.AdapterView;
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.adapter.AdapterProdutos;
 import com.example.ifoodclone.dao.ProdutoDAO;
+import com.example.ifoodclone.helper.Base64Custom;
 import com.example.ifoodclone.helper.FirebaseSettings;
 import com.example.ifoodclone.helper.RecyclerItemClickListener;
 import com.example.ifoodclone.model.Produto;
+import com.example.ifoodclone.model.Token_Empresa;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +49,10 @@ public class EmpresaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_empresa);
+
+        //notificação
+        salva_token();
+
 
         toolbar= findViewById(R.id.toolbar);
         toolbar.setTitle("IFood Empresa");
@@ -94,6 +104,22 @@ public class EmpresaActivity extends AppCompatActivity {
         fill_produtos();
     }
 
+    private void salva_token(){
+        databaseReference= FirebaseSettings.getDatabaseReference();
+        String id= Base64Custom.encode64(FirebaseSettings.getFirebaseAuth().getCurrentUser().getEmail());
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(task.isSuccessful()){
+                    String token= task.getResult();
+                    Token_Empresa token_empresa= new Token_Empresa();
+                    token_empresa.setToken(token);
+                    databaseReference.child("tokens").child(id).setValue(token_empresa);
+                }
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater= getMenuInflater();
@@ -116,28 +142,29 @@ public class EmpresaActivity extends AppCompatActivity {
             startActivity(new Intent(EmpresaActivity.this,
                     NovoProdutoActivity.class));
         }
+        if(item.getItemId() == R.id.item_pedidos){
+            startActivity(new Intent(EmpresaActivity.this,
+                    PedidosActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void fill_produtos(){
         lista= new ArrayList<>();
-
         adapterProdutos= new AdapterProdutos(lista);
         RecyclerView.LayoutManager layoutManager= new LinearLayoutManager(getApplicationContext());
         rv_produtos.setLayoutManager(layoutManager);
         rv_produtos.setHasFixedSize(true);
         rv_produtos.setAdapter(adapterProdutos);
 
-        String id= FirebaseSettings.getId_user();
+        String id= Base64Custom.encode64(FirebaseSettings.getFirebaseAuth().getCurrentUser().getEmail());
         databaseReference= FirebaseSettings.getDatabaseReference();
         databaseReference.child("produtos").child(id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 lista.clear();
-                if(snapshot.exists()){
-                    for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                        lista.add(dataSnapshot.getValue(Produto.class));
-                    }
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    lista.add(dataSnapshot.getValue(Produto.class));
                 }
                 adapterProdutos.notifyDataSetChanged();
             }
@@ -149,4 +176,6 @@ public class EmpresaActivity extends AppCompatActivity {
         });
 
     }
+
+
 }

@@ -21,6 +21,7 @@ import com.example.ifoodclone.dao.EmpresaDAO;
 import com.example.ifoodclone.dao.UsuarioDAO;
 import com.example.ifoodclone.helper.Base64Custom;
 import com.example.ifoodclone.helper.FirebaseSettings;
+import com.example.ifoodclone.helper.LoadingDialog;
 import com.example.ifoodclone.model.Empresa;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -124,6 +125,8 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        LoadingDialog loadingDialog= new LoadingDialog(ConfiguracoesEmpresaActivity.this);
+        loadingDialog.load_alert_dialog();
         String id= Base64Custom.encode64(FirebaseSettings.getFirebaseAuth().
                 getCurrentUser().getEmail());
         if(requestCode == 1){
@@ -144,6 +147,7 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Uri> task) {
                                 uri_selecionada= task.getResult();
                                 Glide.with(getApplicationContext()).load(uri_selecionada).into(img_perfil);
+                                loadingDialog.dismiss_dialog();
                             }
                         });
                     }

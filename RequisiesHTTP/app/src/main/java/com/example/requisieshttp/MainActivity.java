@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 recuperar_retrofit();
 //                MyTask myTask= new MyTask();
 //                String url_api= "https://blockchain.info/ticker";
-//                String url_api2= "https://viacep.com.br/ws/15170000/json/";
+    //                String url_api2= "https://viacep.com.br/ws/15170000/json/";
 //                myTask.execute(url_api, url_api2);
             }
         });

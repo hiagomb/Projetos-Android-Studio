@@ -6,11 +6,13 @@ import com.example.ifoodclone.R;
 import com.example.ifoodclone.dao.UsuarioDAO;
 import com.example.ifoodclone.helper.Base64Custom;
 import com.example.ifoodclone.helper.FirebaseSettings;
+import com.example.ifoodclone.helper.LoadingDialog;
 import com.example.ifoodclone.model.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +40,8 @@ public class AutenticacaoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_autenticacao);
+
+
 
         txt_empresa= findViewById(R.id.txt_empresa);
         txt_cliente= findViewById(R.id.txt_cliente);
@@ -100,6 +104,8 @@ public class AutenticacaoActivity extends AppCompatActivity {
     }
 
     private void verifica_usuario_logado(){
+        LoadingDialog loadingDialog= new LoadingDialog(this);
+        loadingDialog.load_alert_dialog();
         if(FirebaseSettings.getFirebaseAuth().getCurrentUser()!= null){
             String id= Base64Custom.encode64(FirebaseSettings.getFirebaseAuth().
                     getCurrentUser().getEmail());
@@ -112,9 +118,11 @@ public class AutenticacaoActivity extends AppCompatActivity {
                         if(u.getTipo().equalsIgnoreCase("empresa")){
                             startActivity(new Intent(AutenticacaoActivity.this,
                                     EmpresaActivity.class));
+                            finish();
                         }else{
                             startActivity(new Intent(AutenticacaoActivity.this,
                                     HomeActivity.class));
+                            finish();
                         }
                     }
                 }
@@ -125,5 +133,6 @@ public class AutenticacaoActivity extends AppCompatActivity {
                 }
             });
         }
+        loadingDialog.dismiss_dialog();
     }
 }

@@ -5,15 +5,22 @@
       <map>
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/drawable/bg_edit_text.xml" value="0.1" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_autenticacao.xml" value="0.209375" />
+        <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_cardapio.xml" value="0.1787037037037037" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_configuracaoes_cliente.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_configuracoes_empresa.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_empresa.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_home.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_main.xml" value="0.1953125" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_novo_produto.xml" value="0.209375" />
+        <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_pedidos.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/activity_splash.xml" value="0.209375" />
+        <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/adapter_empresas.xml" value="0.1787037037037037" />
+        <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/adapter_pedidos.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/adapter_produtos.xml" value="0.20615384615384616" />
+        <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/custom_dialog.xml" value="0.1787037037037037" />
+        <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/quant_dialog.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/layout/toolbar.xml" value="0.209375" />
+        <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/menu/menu_cardapio.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/menu/menu_cliente.xml" value="0.209375" />
         <entry key="..\:/Users/Programacao01/Desktop/My_Studies/Projetos-Android-Studio/IFoodClone/app/src/main/res/menu/menu_empresa.xml" value="0.209375" />
       </map>
@@ -24,5 +31,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.209375" />
+      </ProjectState>
+    </option>
   </component>
 </project>

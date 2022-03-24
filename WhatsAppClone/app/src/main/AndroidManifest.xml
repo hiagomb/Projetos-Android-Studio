@@ -20,7 +20,7 @@
         <activity
             android:name=".activity.GrupoCadastroActivity"
             android:exported="false"
-            android:parentActivityName=".activity.GrupoActivity"/>
+            android:parentActivityName=".activity.GrupoActivity" />
         <activity
             android:name=".activity.GrupoActivity"
             android:exported="false"
